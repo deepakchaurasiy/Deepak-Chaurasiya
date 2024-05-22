@@ -1,0 +1,450 @@
+#include <bits/stdc++.h>
+// #include <iostream>
+using namespace std;
+class Result
+{
+    struct Node
+    {
+        int rollno, marks;
+        float percentage;
+        string name, course, branch;
+        Node *next = NULL;
+    };
+    struct Subject
+    {
+        int rollno;
+        map<string, int> fw;
+        Subject *next = NULL;
+    };
+
+public:
+    struct Address
+    {
+        string name, father_name, mother_name;
+        long int mobailno;
+        string Email, address, date_of_bearth;
+        Address *next = NULL;
+    };
+    Node *head = new Node();
+    Address *start = new Address();
+    Subject *lift = new Subject();
+    int delete_record(int rollno)
+    {
+        Node *t;
+        Address *y, *w;
+        y = start;
+        t = head;
+        if (t->rollno == rollno)
+        {
+            head = t->next;
+            if (t->name == y->name)
+            {
+                start = y->next;
+                delete (y);
+            }
+            delete (t);
+
+            return 0;
+        }
+        Node *c = new Node;
+        while (t != NULL && t->rollno != rollno)
+        {
+            c = t;
+
+            t = t->next;
+        }
+        if (t == NULL)
+        {
+            cout << "record not found:\n";
+            return -1;
+        }
+        else
+        {
+            c->next = t->next;
+            while (t->name != y->name && y != NULL)
+            {
+                w = y;
+                y = y->next;
+            }
+            if (y == NULL)
+            {
+                cout << "record not found:\n";
+            }
+            else
+            {
+                w->next = y->next;
+                delete (y);
+            }
+            delete (t);
+            cout << "*************record delete succesfully*************:\n";
+        }
+        return 0;
+    }
+
+    int update_record(int rollno, float per, string sw, int q)
+    {
+        Node *y;
+        Address *z;
+        Subject *sub1;
+        stringstream get(sw);
+        string word;
+        z = start;
+        y = head;
+        sub1 = lift;
+        int t,w = 0;
+
+        while (sub1 != NULL)
+        {
+            if (sub1->rollno == rollno)
+            {
+                
+                while (get >> word)
+                {
+                    cout<<"enter updated max:\n";
+                    cin>>sub1->fw[word];
+
+                    w += sub1->fw[word];
+                }
+            }
+            sub1 = sub1->next;
+        }
+
+        while (y != NULL)
+        {
+            if (y->rollno == rollno)
+            {
+
+                cout << "ENTER NAME OF STUDENT'S:\n";
+                cin >> y->name;
+                // cout << "ENTER MARKS OF STUDENT'S:\n";
+
+                y->marks = w;
+                cout << "ENTER TOTAL MARKES in one subj.:\n";
+                cin >> t;
+                cout << "ENTER COURSE OF STUDENT'S:\n";
+                cin >> y->course;
+                cout << "ENTER BRANCH OF STUDENT :\n";
+                cin >> y->branch;
+                t = t * q;
+                per = y->marks * 100;
+                per = per / t;
+                y->percentage = per;
+                while (z != NULL)
+                {
+                    if (y->name == z->name)
+                    {
+                        cout << "ENTER FATHER'S NAME:\n";
+                        cin >> z->father_name;
+                        cout << "ENTER MOTHER'S NAME:\n";
+                        cin >> z->mother_name;
+                        cout << "ENTER DATE OF BEARTH:\n";
+                        cin >> z->date_of_bearth;
+                        cout << "ENTER EMAILADDRESS :\n";
+                        cin >> z->Email;
+                        cout << "ENTER MOBAILNO:\n";
+                        cin >> z->mobailno;
+                        cout << "ENTER ADDRESS :\n";
+                        cin >> z->address;
+                    }
+                    z = z->next;
+                }
+            }
+            y = y->next;
+        }
+        return 0;
+    }
+    bool cheak(int x)
+    {
+
+        Node *t;
+        t = head;
+        while (t != NULL)
+        {
+            if (t->rollno == x)
+            {
+                return true;
+            }
+            t = t->next;
+        }
+        return false;
+    }
+
+    int insert_record(int rollno, string name, string course, int ns, string s, string h)
+    {
+
+        Address *m = new Address();
+
+        if (cheak(rollno))
+        {
+            cout << "this record alredy exisit:\n"
+                 << "try again :\n";
+            return 0;
+        }
+        Subject *in;
+        Subject *push;
+        int sum = 0, marks;
+        float per, tn;
+        in = new Subject();
+        stringstream get(h);
+        push = lift;
+        string word;
+        int i = 0, max;
+
+        in->rollno = rollno;
+        while (get >> word)
+        {
+            cout << "enter max of subject" << word << endl;
+            cin >> max;
+            sum += max;
+            in->fw[word] = max;
+            in->next = NULL;
+            i++;
+        }
+        marks = sum;
+        per = marks * 100;
+        tn = ns * 100;
+        per = per / tn;
+
+        if (push->next == NULL)
+        {
+
+            push->next = in;
+        }
+        else
+        {
+            while (push->next != NULL)
+            {
+                push = push->next;
+            }
+            push->next = in;
+        }
+        Node *t = new Node();
+
+        t->rollno = rollno;
+        t->name = name;
+        t->marks = marks;
+        t->percentage = per;
+        t->course = course;
+        t->branch = s;
+        t->next = NULL;
+
+        if (head == NULL || head->rollno >= t->rollno)
+        {
+            t->next = head;
+            head = t;
+        }
+        else
+        {
+            Node *c = new Node;
+            c = head;
+            while (c->next != NULL && c->next->rollno < t->rollno)
+            {
+                c = c->next;
+            }
+            t->next = c->next;
+            c->next = t;
+        }
+
+        Address *e = new Address;
+        cout << "ENTER NAME OF STUDENT,FATHER'S,& MOTHER'S:\n";
+        cin >> m->name >> m->father_name >> m->mother_name;
+        cout << "ENTER DATE OF BEARTH,EMAIL,MOBAILNO,ADDRESS:\n";
+        cin >> m->date_of_bearth >> m->Email >> m->mobailno >> m->address;
+
+        e = start;
+        while (e->next != NULL)
+        {
+            e = e->next;
+        }
+        m->next = e->next;
+        e->next = m;
+
+        cout << "\n\n************RECOUD INSERT SUCCESFULLY***************:\n\n\n";
+
+        return 0;
+    }
+    int view_record()
+    {
+        Address *r;
+        r = start;
+        cout << "\n\n********THIS IS MY PERSONAL DETAILE:***************\n\n";
+        if (r == NULL)
+        {
+            return 0;
+        }
+        cout << "  NAME    \t FATHER'S NAME    \t   MOTHER'S NAME   \t     DATE OF BEARTH   \t    EMAIL            \t  MOBAILE NO.    \t   ADDRESS.  \n";
+        while (r != NULL)
+        {
+            cout << r->name << "    \t   " << r->father_name << "      \t    " << r->mother_name << "      \t  " << r->date_of_bearth << "    \t    " << r->Email << "      \t  " << r->mobailno << "    \t  " << r->address << "\n";
+            r = r->next;
+        }
+        Node *o;
+        o = head;
+        cout << "\n\n *******************THIS IS MY COLLEGE DETALE****************\n\n\n";
+        cout << "\t\t\t ROLLNO \t\t  NAME   \t  MARKS  \t     COURSE     PERSENTAGE  \t   BRANCH  \n";
+        while (o != NULL)
+        {
+            cout << "\t\t\t" << o->rollno
+                 << "\t      " << o->name << "    \t\t" << o->marks << "   \t\t  "
+                 << o->course << "     "
+                 << o->percentage << " %"
+                 << "    \t "
+                 << o->branch << "\n";
+
+            o = o->next;
+        }
+        cout << "\n\n****************___________ALL RECORDS OF STUDENT_______________***********\n\n\n";
+        return 0;
+    }
+    int show_record(int rollno, string j, int to)
+    {
+        Node *c;
+        Subject *z;
+        c = head;
+        stringstream get(j);
+        string words;
+        if (c == NULL)
+        {
+            cout << "No record found in this list:\n";
+            return 0;
+        }
+        else
+        {
+            int _q = 0;
+
+            while (c != NULL)
+            {
+                if (c->rollno == rollno)
+                {
+                    _q++;
+                    cout << "\t\t\tROOL NO.\t  NAME    \t MARKS  \t COURS. \t PERSENTAGE .\t BRANCHE.\n";
+                    cout << "\t\t\t" << c->rollno << " \t " << c->name << "  \t   " << c->marks << "   \t " << c->course << "  \t  " << c->percentage << " %"
+                         << " \t " << c->branch << "\n\n\n";
+                    break;
+                }
+
+                c = c->next;
+            }
+            if (_q == 0)
+            {
+                cout << "record not exit tryagane :\n\n\n";
+                return 0;
+            }
+            z = lift;
+            while (z->rollno != rollno)
+            {
+                z = z->next;
+            }
+            if (z->rollno == rollno)
+            {
+                int i = 1;
+                cout << "\t\t  sr.no    subjects   marks   totalmarks:\n";
+                 while (get >> words)
+                {
+
+                    cout << "\t\t " << i << "           " << words      << "       " << z->fw[words] << "    " << to << "\n";
+                    i++;
+                }
+            }
+
+            cout << "\n\n*****************this is college detaile__________________________\n";
+
+            Address *b;
+            b = start;
+            while (b != NULL)
+            {
+                if (b->name == c->name)
+                {
+
+                    cout << "NAME  :" << b->name << "\n FATHER NAME  :" << b->father_name << " \n MOTHER NAME :" << b->mother_name << "   \n";
+
+                    cout << "DATE OF BEARTH  :" << b->date_of_bearth << " \n EMAIL ADDRESS :" << b->Email << " \n MOBAIL NO.  :" << b->mobailno << " \n ADDRESS.  :" << b->address << "  \n";
+                }
+                b = b->next;
+            }
+            cout << "\n\n******************this is my personal detale*************************\n\n\n";
+        }
+        return 0;
+    }
+};
+int main()
+{
+    Result res;
+    int choice;
+    int rollno;
+    string name, course, branch;
+    int t, n;
+    float per;
+    string sub;
+
+    cout << "ENTER SUBJECTS OF THE STUDENTS:\n\n";
+    std::getline(cin, sub);
+    cout << "enter number of subject you inter \n";
+    cin >> n;
+    int o;
+    int sum = 0;
+
+    while (true)
+    {
+
+        cout << "\t\t****************some opration in record********************\n\n";
+        cout << "1.insert record in the list:\n\n";
+        cout << "2.delete record from list:\n\n";
+        cout << "3.show student record:\n\n";
+        cout << "4.view student record:\n\n";
+        cout << "5. for update record :\n\n";
+        cout << "6.for enter the subject :\n\n";
+        cout << "7. for exit the program :\n\n";
+        cout << "enter your choice:\n\n";
+        cin >> choice;
+        if (choice == 1)
+        {
+            cout << "ENTER ROLL NO OF STUDENT'S :\n";
+            cin >> rollno;
+            cout << "ENTER NAME OF STUDENT'S :\n";
+            cin >> name;
+            cout << "ENTER TOTAL max.MARKES in one subj. :\n";
+            cin >> o;
+            cout << "ENTER COURSE OF STUDENT:\n";
+            cin >> course;
+            cout << "ENTER BRANCH OF STUDENT :\n";
+            cin >> branch;
+            res.insert_record(rollno, name, course, n, branch, sub);
+        }
+        else if (choice == 2)
+        {
+            int g;
+            cout << "enter rollno of the student:\n";
+            cin >> rollno;
+            g = res.delete_record(rollno);
+            if (g == 0)
+            {
+                cout << "record is deleted :\n";
+            }
+            else if (g == -1)
+            {
+                cout << "record is not found:\n";
+            }
+        }
+        else if (choice == 3)
+        {
+            cout << "enter the rollno of the student :\n";
+            cin >> rollno;
+            res.show_record(rollno, sub, o);
+        }
+        else if (choice == 4)
+        {
+            res.view_record();
+        }
+        else if (choice == 5)
+        {
+            cout << "enter a rollno :\n";
+            cin >> rollno;
+            res.update_record(rollno, per, sub, n);
+        }
+        else if (choice == 6)
+        {
+            exit(1);
+        }
+    }
+}
